@@ -1,0 +1,66 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block title %} Follow The Workout  {% endblock title%}
+
+{% block head %}
+
+
+    <img src="static/logo/edit_logo.png" alt="Your Logo" style="max-width: 80%; height: auto ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    margin: 0;;">
+    <h1>Talekar Fitness Hub</h1>
+
+</div>
+
+{% endblock head %}
+{% block body %}
+
+
+
+
+
+
+<style>
+    .img-fluid-change{
+      height: 10rem;
+      width: 7rem;
+    }
+    
+  </style>
+  
+<section id="services" class="services">
+    <div class="text-center">
+
+    
+    <h2 style="color: black">Gym Equipment Gallery </h2>
+</div>
+    <div class="row portfolio-container text-center mt-5" data-aos="fade-up" data-aos-delay="200">
+        
+    
+  {% for service in services %}
+
+
+    <div class="col-lg-4 col-md-4 portfolio-item filter-app">
+      <div class="portfolio-wrap">
+        <img src="{{ site_url }}{{ service.img_link }}" class="img-fluid-change" alt="">
+        <div class="portfolio-info">
+          <h4>{{ service.name }}</h4>
+       
+          <div class="portfolio-links">
+            <a href="{{ site_url }}{{ service.img_link }}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{ service.name }}"><i class="bx bx-plus"></i></a>
+            <a href="https://www.youtube.com/shorts/wIkvFgrdcrU" title="More Details"><i class="bx bx-link"></i></a>
+            <p>{{ service.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endfor %}
+
+</div>  
+</section>
+
+
+{% endblock body %}
