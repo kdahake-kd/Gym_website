@@ -11,6 +11,13 @@ urlpatterns = [
     path('contact',views.contact,name="contact"),
     path('gallery',views.gallery,name="gallery"),
     path('attendance',views.attendance,name="attendance"),
+     path('services',views.services,name="services"),
+    path('blog',views.post_list,name='blog'),
+    path('shop',views.shop,name='shop'),
+    path('about',views.about,name='about'),
+    path('initiate-payment/', views.initiate_payment, name='initiate_payment'),
+    path('payment-success/', views.payment_success, name='payment_success'),
+    path('fetch_data',views.fetch_data,name="fetch_data")
 
     
     

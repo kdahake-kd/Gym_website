@@ -184,3 +184,126 @@ def services(request):
     site_url = request.scheme + "://" + request.META["HTTP_HOST"] + MEDIA_URL
     print(site_url)
     return render(request,"services.html", context={"services": services, "site_url": site_url})
+
+
+def post_list(request):
+    queryset = Post.objects.all()
+    context={"blogs":queryset}
+    return render(request, 'blog.html', context)
+
+@login_required(login_url='authapp:handlelogin')
+def post_blog(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "Please log in and try again")
+        return redirect('/login')
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        author = request.user
+        image = request.FILES.get('image')  # Use request.FILES to get the uploaded file
+
+        # Create a new Post object with image
+        blog_post = Post(title=title, content=content, author=author, img_link=image)
+        blog_post.save()
+
+        messages.success(request, "Thanks for posting the blog")
+        return redirect('/blog')
+    else:
+        # Handle the case where the request method is not POST
+        messages.warning(request, "Invalid request method")
+
+    return render(request, "post_blog.html")
+
+
+@login_required(login_url='authapp:handlelogin')
+def shop(request):
+    products = Product.objects.all()
+    
+    site_url = request.scheme + "://" + request.META["HTTP_HOST"] + MEDIA_URL
+    return render(request,'shop.html', context={'products': products, "site_url": site_url})
+
+
+def order(request):
+    if request.method != "POST":
+        messages.warning(request, "Method not allowed!")
+        return redirect('/')
+
+    product_id = request.POST.get('product_id')
+    address = request.POST.get("address")
+
+    product = Product.objects.filter(id=product_id).last()
+    if product is None:
+        messages.warning(request, "Product not found!")
+        return redirect('/')
+
+    order_obj = Order(product=product, address=address, user=request.user)
+    order_obj.save()
+    messages.success(request, "Order placed successfully")
+    return redirect('/')
+
+
+def initiate_payment(request):
+    product_id = request.GET.get('product_id')
+    # address = request.POST.get("address")
+
+    product = Product.objects.filter(id=product_id).last()
+    if product is None:
+        messages.warning(request, "Product not found!")
+        return redirect('/')
+
+    order_obj = Order(product=product, user=request.user)
+    order_obj.save()
+
+    if request.method != "POST":
+        # messages.warning(request, "Method not allowed!")
+        return render(request, 'payment.html', {'order_obj': order_obj, 'product': product})
+
+    amount = 50000  # Amount in paise (e.g., 50 INR)
+    client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
+    
+
+    payment_data = {
+        'amount': product.price,
+        'currency': 'INR',
+        'receipt': f'order_rcptid_{order_obj.id}',
+        'payment_capture': '1'
+    }
+
+    # Create a Razorpay Order
+    order = client.order.create(data=payment_data)
+
+    return JsonResponse(order)
+
+
+@csrf_exempt
+def payment_success(request):
+    if request.method == 'POST':
+        payment_id = request.POST.get('payment_id')
+        # Perform any necessary actions, such as updating the order status
+        # ...
+        order_id = request.POST.get('order_id')
+        payment_id = request.POST.get('payment_id')
+
+        order = Order.objects.filter(pk=order_id).last()
+        # Perform any necessary actions, such as up
+        if order is not None:
+            order.status = True
+            order.save()
+            messages.success(request, "Payment successful!")
+
+        return redirect(reverse('authapp:shop'))
+
+
+    messages.success(request, "Payment unsuccessful!")
+    return redirect(reverse('authapp:shop'))
+
+def fetch_data(request):
+     last_five_user_data = User.objects.order_by('-last_login')[:5]
+     
+
+    #  user_data_with_trainer = Enrollment.objects.select_related(name='Shubham').all()
+
+    #  print(user_data_with_trainer)
+     
+     return render(request, "fetch_data.html",context={'last_five_user_data': last_five_user_data})
