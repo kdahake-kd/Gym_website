@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}
+Shop
+{% endblock title %}
+{% block head %}
+  <div class="text-center">
+    <h1>Buy The Trusted Product </h1>
+  </div>
+{% endblock head %}
+{% block body %}
+<style>
+    .img-fluid-shop{
+      height: 10rem;
+      width: 7rem;
+      margin:auto;
+    }
+    
+  </style>
+  
+
+<div class="container">
+    <div class="container mt-5">
+        <div class="row">
+            {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <img src="{{ site_url }}{{ product.img_link }}" class="card-img-top img-fluid-shop" alt="{{ product.name }}">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                <p class="card-text">{{ product.desc }}</p>
+                <p class="card-text fw-bold">/- {{ product.price  }}</p>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center text-center">
+                            <a href="{% url 'authapp:initiate_payment' %}?product_id={{ product.id }}" class="btn btn-primary col-md-2">Buy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+            <!-- Repeat similar card structures for other products -->
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock body %}
