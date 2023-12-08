@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+Blog
+{% endblock title %}
+{% block body %}
+
+<div class="container mt-2">
+<Center><h1>Blog</h1></Center>
+<div class="row">
+
+
+{% for blog in blogs  %}  
+<div class="col-md-4">
+
+
+    <div class="card">
+        <img src="{{blog.img_link.url}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{blog.title}}</h5>
+          <p class="card-text">Uploaded On : {{blog.timestamp}} </p>
+          <p class="card-text">Uploaded by : {{blog.author.first_name}} </p>
+
+        </div>
+      </div>
+
+
+</div>
+{% endfor %}
+<br>
+<br>
+
+
+</div>
+</div>
+
+
+
+
+
+{% endblock body %}
