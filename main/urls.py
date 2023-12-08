@@ -9,6 +9,8 @@ urlpatterns = [
     path('join',views.enroll,name="enroll"),
     path('profile',views.profile,name="profile"),
     path('contact',views.contact,name="contact"),
+    path('gallery',views.gallery,name="gallery"),
+    path('attendance',views.attendance,name="attendance"),
 
     
     
